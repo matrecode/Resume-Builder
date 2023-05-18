@@ -20,41 +20,41 @@ const Body = () => {
     const [cvInformation, setCvInformation] = useState({
         [sections.basicInfo]:{
             id:sections.basicInfo,
-            title:sections.basicInfo,
+            sectionTitle:sections.basicInfo,
             detail:{}
         },
 
         [sections.workExp]:{
             id:sections.workExp,
-            title:sections.workExp,
-            details:[{Exp:"Hello"}]
+            sectionTitle:sections.workExp,
+            details:[{Exp:"Hello"}, {Exp:"Hirak Bhai"}]
         },
 
         [sections.projects]:{
             id:sections.projects,
-            title:sections.projects,
+            sectionTitle:sections.projects,
             details:[]
         },
         [sections.education]:{
             id:sections.education,
-            title:sections.education,
+            sectionTitle:sections.education,
             details:[]
         },
 
         [sections.achievements]:{
             id:sections.achievements,
-            title:sections.achievements,
+            sectionTitle:sections.achievements,
             points:[]
         },
         [sections.summary]:{
             id:sections.summary,
-            title:sections.summary,
+            sectionTitle:sections.summary,
             details:""
         },
 
         [sections.other]:{
             id:sections.other,
-            title:sections.other,
+            sectionTitle:sections.other,
             details:""
         },
 
@@ -67,9 +67,9 @@ const Body = () => {
         <div className={styles.toolbar}>
             <div className={styles.colors}>
                 {
-                colors.map(item => 
+                colors.map((item,index) => 
                 
-                <span key = {item} style={{backgroundColor:item}} className={styles.color}/>)
+                <span key ={item + index} style={{backgroundColor:item}} className={styles.color}/>)
                 }
             </div>
             <button className={styles.downloadButton}>Download <Download/></button>

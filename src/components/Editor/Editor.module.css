@@ -63,3 +63,22 @@
     height: 18px;
     width: 18px;
 }
+
+.body button{
+    padding:8px 15px;
+    background-color: #6f23c5;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:1rem;
+    cursor:pointer;
+    width: fit-content;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    transition: 200ms;
+}
+
+.body button:active{
+    transform: translateY(2px);
+}
