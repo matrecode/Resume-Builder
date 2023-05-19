@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from "./Body.module.css"
 import {Download} from "react-feather"
 import Editor from '../Editor/Editor'
@@ -27,7 +27,9 @@ const Body = () => {
         [sections.workExp]:{
             id:sections.workExp,
             sectionTitle:sections.workExp,
-            details:[{Exp:"Hello"}, {Exp:"Hirak Bhai"}]
+            details:[
+                {certlink:"cdsfdsfds",companyname:"HCL" }
+            ]
         },
 
         [sections.projects]:{
@@ -44,21 +46,25 @@ const Body = () => {
         [sections.achievements]:{
             id:sections.achievements,
             sectionTitle:sections.achievements,
-            points:[]
+            detail:""
         },
         [sections.summary]:{
             id:sections.summary,
             sectionTitle:sections.summary,
-            details:""
+            detail:""
         },
 
         [sections.other]:{
             id:sections.other,
             sectionTitle:sections.other,
-            details:""
+            detail:""
         },
 
     })
+
+    useEffect(()=>{
+        console.log(cvInformation);
+    },[cvInformation]);
   return (
     <div className={styles.container}>
         <div className={styles.heading}>
@@ -75,7 +81,7 @@ const Body = () => {
             <button className={styles.downloadButton}>Download <Download/></button>
         </div>
         <div className={styles.main}>
-            <Editor sections={sections} information = {cvInformation}/>
+            <Editor sections={sections} information = {cvInformation} setCvInformation={setCvInformation}/>
         </div>
        
 

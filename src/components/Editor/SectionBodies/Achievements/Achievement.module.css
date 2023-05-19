@@ -17,3 +17,19 @@
 .detail .row > div{
     flex:1;
 }
+
+.detail .column textarea{
+    border: 1px solid #cccccc;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border-radius:10px;
+    outline: none;
+}
+
+textarea:hover{
+    border: 1px solid #adadad;
+}
+
+textarea:focus{
+    border: 1px solid #6f23c5;
+}
