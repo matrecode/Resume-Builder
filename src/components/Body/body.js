@@ -27,9 +27,7 @@ const Body = () => {
         [sections.workExp]:{
             id:sections.workExp,
             sectionTitle:sections.workExp,
-            details:[
-                {certlink:"cdsfdsfds",companyname:"HCL" }
-            ]
+            details:[]
         },
 
         [sections.projects]:{

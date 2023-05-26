@@ -29,6 +29,8 @@ const Editor = (props) => {
     sections[Object.keys(sections)[0]]
   );
 
+  const [activeDetailIndex, setActiveDetailIndex] = useState(0);
+
   // To store the values which is getting from forms
 
   const [values, setValues] = useState({
@@ -115,20 +117,20 @@ const Editor = (props) => {
             }}
           />
         );
-      case sections.summary:
-        return (
-          <Summary
-            sumValues={values}
-            onChange={(event) => {
-              // getting the value with help of name attributes and value attribute
-              const { name, value } = event.target;
-              setValues((prevValues) => ({
-                ...prevValues,
-                [name]: value,
-              }));
-            }}
-          />
-        );
+        case sections.summary:
+          return (
+            <Summary
+              summaryValues={values}
+              onChange={(event) => {
+                // getting the value with help of name attributes and value attribute
+                const { name, value } = event.target;
+                setValues((prevValues) => ({
+                  ...prevValues,
+                  [name]: value,
+                }));
+              }}
+            />
+          );
       case sections.other:
         return (
           <Others
@@ -148,47 +150,179 @@ const Editor = (props) => {
     }
   };
 
-  const handleSubmission = () =>{
+  const handleSubmission = () => {
+    // const activeInfo = information[sections[activeSectionKeys]];
+    // console.log(activeInfo)
     switch (sections[activeSectionKeys]) {
-      case sections.basicInfo:{
-        
+      case sections.basicInfo: {
         const templateDetails = {
-          name:values.name,
-          title:values.title,
-          linkedin:values.linkedin,
-          github:values.github,
-          email:values.email,
-          phone:values.phone,
-        }
-        props.setCvInformation((prev)=>({
-          ...prev, [sections.basicInfo]: {
-            ...prev[sections.basicInfo], detail:templateDetails
-          }
+          name: values.name,
+          title: values.title,
+          linkedin: values.linkedin,
+          github: values.github,
+          email: values.email,
+          phone: values.phone,
+        };
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.basicInfo]: {
+            ...prev[sections.basicInfo],
+            detail: templateDetails,
+            sectionTitle,
+          },
         }));
         break;
       }
 
-      case sections.achievements:{
-        
+      case sections.achievements: {
         const templateDetails = {
-         description: values.description
-        }
-        props.setCvInformation((prev)=>({
-          ...prev, [sections.basicInfo]: {
-            ...prev[sections.basicInfo], detail:templateDetails
-          }
+          description: values.description,
+        };
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.achievements]: {
+            ...prev[sections.achievements],
+            detail: templateDetails,
+            sectionTitle,
+          },
         }));
         break;
-
       }
+
+      case sections.workExp: {
+        const templateDetails = {
+          title: values.title,
+          companyname: values.companyname,
+          certlink: values.certlink,
+          location: values.location,
+          startdate: values.startdate,
+          enddate: values.enddate,
+          description: values.description,
+        };
+
+        const tempDetails = [...information[sections.workExp]?.details];
+        tempDetails[activeDetailIndex] = templateDetails
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.workExp]: {
+            ...prev[sections.workExp],
+            details: tempDetails,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
+
+      case sections.projects: {
+        const templateDetails = {
+          title: values.title,
+          overview: values.overview,
+          deploylink: values.deploylink,
+          github: values.github,
+          description: values.description,
+        };
+
+        const tempDetails = [...information[sections.projects]?.details];
+        tempDetails[activeDetailIndex] = templateDetails
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.projects]: {
+            ...prev[sections.projects],
+            details: tempDetails,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
+
+      case sections.education: {
+        const templateDetails = {
+          title: values.title,
+          clgname: values.clgname,
+          startdate: values.startdate,
+          enddate: values.enddate,
+          description: values.description,
+        };
+
+        const tempDetails = [...information[sections.education]?.details];
+        tempDetails[activeDetailIndex] = templateDetails
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.education]: {
+            ...prev[sections.education],
+            details: tempDetails,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
+
+      case sections.other: {
+        const templateDetails = {
+          description: values.description,
+        };
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.other]: {
+            ...prev[sections.other],
+            detail: templateDetails,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
+
+      case sections.summary: {
+        const templateDetails = {
+          description: values.description,
+        };
+        props.setCvInformation((prev) => ({
+          ...prev,
+          [sections.summary]: {
+            ...prev[sections.achievements],
+            detail: templateDetails,
+            sectionTitle,
+          },
+        }));
+        break;
+      }
+
 
       default:
-        return null
-
-
-       
+        return null;
     }
+  };
+
+
+  // Add new Chips
+
+  const handleAddNewChip = ()=> {
+    const details = activeInformation?.details;
+    console.log(details)
+
+    if(!details) return;
+    const lastDetail = details.slice(-1)[0];
+
+    if(!Object.keys(lastDetail).length) return;
+
+    details?.push({})
+
+    props.setCvInformation((prev)=>({
+      ...prev,
+      [sections[activeSectionKeys]]:{
+        ...information[sections[activeSectionKeys]],
+        details:details
+      }
+    }))
+
+    setActiveDetailIndex(details?.length)
   }
+
+
+
+
+
+
   // update the information that we recieve
   // All about to make chips dynamic
   // update function always depend pn the array whenever it change the update function execute
@@ -196,26 +330,43 @@ const Editor = (props) => {
     const activeInfo = information[sections[activeSectionKeys]];
     setActiveInformation(activeInfo);
     setSectionTitle(sections[activeSectionKeys]);
+    setActiveDetailIndex(0);
 
     setValues({
       name: activeInfo?.detail?.name || "",
-      title: activeInfo?.details ? activeInfo.details[0]?.title || "": activeInfo?.detail?.title || "",
+      title: activeInfo?.details
+        ? activeInfo.details[0]?.title || ""
+        : activeInfo?.detail?.title || "",
       linkedin: activeInfo?.detail?.linkedin || "",
-      github: activeInfo?.details ? activeInfo.details[0]?.github || "": activeInfo?.detail?.github || "",
+      github: activeInfo?.details
+        ? activeInfo.details[0]?.github || ""
+        : activeInfo?.detail?.github || "",
       phone: activeInfo?.detail?.phone || "",
       email: activeInfo?.detail?.email || "",
-      description: typeof activeInfo?.detail !== "object" ? activeInfo.detail : "",
-      clgname: activeInfo?.details ? activeInfo.details[0]?.clgname || "": "",
-      startdate: activeInfo?.details ? activeInfo.details[0]?.startdate || "": "",
-      enddate: activeInfo?.details ? activeInfo.details[0]?.enddate || "": "",
+      description:
+        typeof activeInfo?.detail !== "object" ? activeInfo.detail : "",
+      clgname: activeInfo?.details ? activeInfo.details[0]?.clgname || "" : "",
+      startdate: activeInfo?.details
+        ? activeInfo.details[0]?.startdate || ""
+        : "",
+      enddate: activeInfo?.details ? activeInfo.details[0]?.enddate || "" : "",
       // description:activeInfo?.detail?.description || "",
-      overview:activeInfo?.details ? activeInfo.details[0]?.overview || "": "",
-      deploylink:activeInfo?.details ? activeInfo.details[0]?.deploylink || "": "",
-      companyname: activeInfo?.details ? activeInfo.details[0]?.companyname || "": "",
-      certlink: activeInfo?.details ? activeInfo.details[0]?.certlink || "": "",
-      location: activeInfo?.details ? activeInfo.details[0]?.location || "": "",
-      
-    })
+      overview: activeInfo?.details
+        ? activeInfo.details[0]?.overview || ""
+        : "",
+      deploylink: activeInfo?.details
+        ? activeInfo.details[0]?.deploylink || ""
+        : "",
+      companyname: activeInfo?.details
+        ? activeInfo.details[0]?.companyname || ""
+        : "",
+      certlink: activeInfo?.details
+        ? activeInfo.details[0]?.certlink || ""
+        : "",
+      location: activeInfo?.details
+        ? activeInfo.details[0]?.location || ""
+        : "",
+    });
   }, [activeSectionKeys, information, sections]);
 
   return (
@@ -245,7 +396,13 @@ const Editor = (props) => {
           {activeInformation?.details
             ? activeInformation?.details?.map((item, index) => {
                 return (
-                  <div className={styles.chip} key={item.title + index}>
+                  <div
+                    className={`${styles.chip} ${
+                      activeDetailIndex === index ? styles.active : ""
+                    }`}
+                    key={item.title + index}
+                    onClick={() => setActiveDetailIndex(index)}
+                  >
                     <p>
                       {sections[activeSectionKeys]} {index + 1}
                     </p>
@@ -254,6 +411,12 @@ const Editor = (props) => {
                 );
               })
             : ""}
+
+            {
+              activeInformation?.details && activeInformation?.details?.length > 0 ? (
+                <div className={styles.newChip} onClick={handleAddNewChip}>+New</div>) :( "")
+              
+            }
         </div>
         {generateBody()}
         <button onClick={handleSubmission}>Save</button>
